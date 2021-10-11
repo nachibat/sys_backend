@@ -7,7 +7,7 @@ const userModel = require('../models/user.model');
 const login = async (req, res) => {
     try {
         const { username, password } = req.body;
-        const user = await userModel.findOne({ username });
+        const user = await userModel.findOne({ username, state: true });
         if (!user) { return loginError(res); }
         if (!bcrypt.compareSync(password, user.password)) { return loginError(res); }
         const token = jwt.sign({ user }, process.env.SEED, { expiresIn: process.env.TOKEN_EXPIRATION });

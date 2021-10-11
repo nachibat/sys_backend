@@ -28,7 +28,8 @@ const userSchema = new mongoose.Schema({
     lastname: String,
     email: String
 }, {
-    timestamps: { currentTime: () => new Date(new Date().getTime() - (new Date().getTimezoneOffset() * 60000)) },
+    // timestamps: { currentTime: () => new Date(new Date().getTime() - (new Date().getTimezoneOffset() * 60000)) },
+    timestamps: true,
     versionKey: false
 });
 
