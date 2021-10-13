@@ -22,4 +22,13 @@ const verifyAdminRole = (req, res, next) => {
     }
 }
 
-module.exports = { verifyToken, verifyAdminRole }
+const verifySaleRole = (req, res, next) => {
+    const user = req.user;
+    if (user.role === 'USER_ROLE') {
+        permissonFailed(res);
+    } else {
+        next();
+    }
+}
+
+module.exports = { verifyToken, verifyAdminRole, verifySaleRole }
