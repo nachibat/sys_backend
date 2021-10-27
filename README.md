@@ -13,10 +13,13 @@ Copy the certificate files (server.crt, server.key) to the root of the project.
 ## Development
 
 Install node repositories with `npm install`
+
 Run the project with `npm run dev`
 
 ## Production
 
 Install node repositories with `npm install --production`
+
 Run the project with `npm start`
+
 To declare the variables run `set NODE_ENV=prod& node src/server.js`
