@@ -1,11 +1,17 @@
 require('./config/general');
 
+const fs = require('fs');
+const https = require('https');
+
 const express = require('express');
 const cors = require('cors');
 
 const { dbConnect } = require('./config/mongo');
 
-const PORT = process.env.PORT;
+const ssl_options = {
+    key: fs.readFileSync('./server.key'),
+    cert: fs.readFileSync('./server.crt')
+}
 
 const app = express();
 
@@ -25,6 +31,12 @@ app.use('/api', require('./routes/routes'));
 
 dbConnect();
 
-app.listen(PORT, () => {
-    console.log('API READY. Listening on port', PORT);
-});
+if (process.env.NODE_ENV === 'dev') {
+    app.listen(process.env.PORT, () => {
+        console.log('API READY. Listening on port', process.env.PORT);
+    });
+} else {
+    https.createServer(ssl_options, app).listen(process.env.SECURE_PORT, () => {
+        console.log('API READY. Listening on port', process.env.SECURE_PORT);
+    });
+}
