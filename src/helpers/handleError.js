@@ -9,7 +9,7 @@ const httpError = (res, err, status = 400, msg = 'something_wrong') => {
 const loginError = (res) => {
     return res.status(401).json({
         ok: false,
-        error: 'login_failed',
+        error: 'bad_login',
         detail: { message: 'Wrong username or password' }
     });
 }
