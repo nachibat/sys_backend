@@ -11,6 +11,10 @@ const productSchema = new mongoose.Schema({
         type: String,
         required: [true, 'Description required']
     },
+    category: {
+        type: String,
+        default: 'kiosko'
+    },
     quantity: {
         type: Number,
         default: 0
