@@ -15,9 +15,10 @@ const getProduct = async (req, res) => {
 const getProducts = async (req, res) => {
     const from = Number(req.query.from) || 0;
     const limit = Number(req.query.limit) || 5;
+    const order = req.query.order || '';
     try {
         const total = await productModel.countDocuments({});
-        const listProducts = await productModel.find({}).skip(from).limit(limit);
+        const listProducts = await productModel.find({}).skip(from).limit(limit).sort(order);
         return res.json({ ok: true, total, listProducts });
     } catch (e) {
         httpError(res, e);

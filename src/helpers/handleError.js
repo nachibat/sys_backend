@@ -30,7 +30,7 @@ const failToFind = (res, err, element) => {
             detail: { message: `Can\'t find ${element}` }
         });
     } else {
-        return res.status(400).json({
+        return res.status(500).json({
             ok: false,
             error: 'something_wrong',
             detail: err
