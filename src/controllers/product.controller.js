@@ -25,6 +25,36 @@ const getProducts = async (req, res) => {
     }
 }
 
+const searchProducts = async (req, res) => {
+    const from = Number(req.query.from) || 0;
+    const limit = Number(req.query.limit) || 5;
+    const field = req.query.field || 'barcode';
+    const term = req.query.term || '';
+    const regex = new RegExp(term, 'i');
+    let data = {};
+    switch (field) {
+        case 'barcode':
+            data = { barcode: regex }
+            break;
+        case 'description':
+            data = { description: regex }
+            break;
+        case 'category':
+            data = { category: regex }
+            break;
+        default:
+            break;
+    }
+    try {
+        const total = await productModel.countDocuments(data);
+        const listProducts = await productModel.find(data).skip(from).limit(limit);
+        return res.json({ ok: true, total, listProducts });
+    } catch (e) {
+        httpError(res, e);
+    }
+    return res.json({ ok: true, msg: 'Ready' });
+}
+
 const createProduct = async (req, res) => {
     try {
         const { barcode, description, category, quantity, cost_price, percent_profit, price } = req.body;
@@ -61,4 +91,4 @@ const deleteProduct = async (req, res) => {
     }
 }
 
-module.exports = { getProduct, getProducts, createProduct, modifyProduct, deleteProduct }
+module.exports = { getProduct, getProducts, searchProducts, createProduct, modifyProduct, deleteProduct }
