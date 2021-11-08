@@ -25,6 +25,20 @@ const getProducts = async (req, res) => {
     }
 }
 
+const getStock = async (req, res) => {
+    const from = Number(req.query.from) || 0;
+    const limit = Number(req.query.limit) || 10;
+    const order = req.query.order || 'quantity';
+    const category = req.query.category || 'kiosko';
+    try {
+        const total = await productModel.countDocuments({ category });
+        const listProducts = await productModel.find({ category }).skip(from).limit(limit).sort(order);
+        return res.json({ ok: true, total, listProducts });
+    } catch (e) {
+        httpError(res, e);
+    }
+}
+
 const searchProducts = async (req, res) => {
     const from = Number(req.query.from) || 0;
     const limit = Number(req.query.limit) || 5;
@@ -91,4 +105,4 @@ const deleteProduct = async (req, res) => {
     }
 }
 
-module.exports = { getProduct, getProducts, searchProducts, createProduct, modifyProduct, deleteProduct }
+module.exports = { getProduct, getProducts, getStock, searchProducts, createProduct, modifyProduct, deleteProduct }
