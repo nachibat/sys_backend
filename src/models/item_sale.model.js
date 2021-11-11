@@ -9,6 +9,10 @@ const itemSaleSchema = new mongoose.Schema({
         type: String,
         required: [true, 'Barcode required']
     },
+    price: {
+        type: String,
+        required: [true, 'Price required']
+    },
     quantity: {
         type: Number,
         default: 1

@@ -14,8 +14,8 @@ const getItemSale = async (req, res) => {
 
 const createItemSale = async (req, res) => {
     try {
-        const { id_sale, barcode, quantity } = req.body;
-        const itemCreated = await itemSaleModel.create({ id_sale, barcode, quantity });
+        const { id_sale, barcode, price, quantity } = req.body;
+        const itemCreated = await itemSaleModel.create({ id_sale, barcode, price, quantity });
         return res.json({ ok: true, itemCreated });
     } catch (e) {
         httpError(res, e);

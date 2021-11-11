@@ -91,6 +91,17 @@ const modifyProduct = async (req, res) => {
     }        
 }
 
+const reduceStock = async (req, res) => {
+    try {
+        const { barcode, quantity } = req.body;
+        const productModified = await productModel.findOneAndUpdate({ barcode }, { quantity }, { new: true });
+        if (!productModified) { return failToFind(res, { kind: 'ObjectId' }, 'product'); }
+        return res.json({ ok: true, productModified});
+    } catch (e) {
+        return failToFind(res, e, 'product');
+    }    
+}
+
 const deleteProduct = async (req, res) => {
     try {
         const { id } = req.params;
@@ -105,4 +116,4 @@ const deleteProduct = async (req, res) => {
     }
 }
 
-module.exports = { getProduct, getProducts, getStock, searchProducts, createProduct, modifyProduct, deleteProduct }
+module.exports = { getProduct, getProducts, getStock, searchProducts, createProduct, modifyProduct, reduceStock, deleteProduct }
