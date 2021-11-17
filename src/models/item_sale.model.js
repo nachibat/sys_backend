@@ -5,12 +5,12 @@ const itemSaleSchema = new mongoose.Schema({
         type: String,
         required: [true, 'ID sale required']
     },
-    barcode: {
-        type: String,
-        required: [true, 'Barcode required']
+    product: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'products'
     },
     price: {
-        type: String,
+        type: Number,
         required: [true, 'Price required']
     },
     quantity: {

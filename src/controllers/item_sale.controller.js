@@ -12,10 +12,20 @@ const getItemSale = async (req, res) => {
     }
 }
 
+const getItemsSale = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const listItems = await itemSaleModel.find({ id_sale: id }).populate('product', 'barcode description');
+        return res.json({ ok: true, listItems });
+    } catch (e) {
+        return failToFind(res, e, 'item');
+    }
+}
+
 const createItemSale = async (req, res) => {
     try {
-        const { id_sale, barcode, price, quantity } = req.body;
-        const itemCreated = await itemSaleModel.create({ id_sale, barcode, price, quantity });
+        const { id_sale, product, price, quantity } = req.body;
+        const itemCreated = await itemSaleModel.create({ id_sale, product, price, quantity });
         return res.json({ ok: true, itemCreated });
     } catch (e) {
         httpError(res, e);
@@ -48,4 +58,4 @@ const deleteItemSale = async (req, res) => {
     }
 }
 
-module.exports = { getItemSale, createItemSale, modifyItemSale, deleteItemSale }
+module.exports = { getItemSale, getItemsSale, createItemSale, modifyItemSale, deleteItemSale }

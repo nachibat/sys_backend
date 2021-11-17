@@ -12,13 +12,12 @@ const getSale = async (req, res) => {
     }
 }
 
-const getSales = async (req, res) => {
-    const from = Number(req.query.from) || 0;
-    const limit = Number(req.query.limit) || 5;
+const getTodaySales = async (req, res) => {
+    const today = new Date();
+    const date = { createdAt: { $gte: today.setHours(0, 0, 0, 0), $lte: today.setHours(24, 0, 0, 0) } };
     try {
-        // TODO: put search condition by data tange
-        const total = await saleModel.countDocuments({});
-        const listSales = await saleModel.find({}).skip(from).limit(limit);
+        const total = await saleModel.countDocuments(date);
+        const listSales = await saleModel.find(date);
         return res.json({ ok: true, total, listSales });
     } catch (e) {
         httpError(res, e);
@@ -61,4 +60,4 @@ const deleteSale = async (req, res) => {
     }
 }
 
-module.exports = { getSale, getSales, createSale, modifySale, deleteSale }
+module.exports = { getSale, getTodaySales, createSale, modifySale, deleteSale }
