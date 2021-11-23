@@ -12,6 +12,21 @@ const getSale = async (req, res) => {
     }
 }
 
+const getSalesByDate = async (req, res) => {
+    const from = Date.parse(req.query.from) || new Date().setHours(0, 0, 0, 0);
+    const to = Date.parse(req.query.to) || new Date().setHours(23, 0, 0, 0);
+    const firstDate = new Date(new Date(from));
+    const secondDate = new Date(new Date(to).setHours(44, 59, 59));
+    const date = { createdAt: { $gte: firstDate, $lte: secondDate } };
+    try {
+        const total = await saleModel.countDocuments(date);
+        const listSales = await saleModel.find(date);
+        return res.json({ ok: true, total, listSales });
+    } catch (e) {
+        httpError(res, e);
+    }
+}
+
 const getTodaySales = async (req, res) => {
     const today = new Date();
     const date = { createdAt: { $gte: today.setHours(0, 0, 0, 0), $lte: today.setHours(24, 0, 0, 0) } };
@@ -60,4 +75,4 @@ const deleteSale = async (req, res) => {
     }
 }
 
-module.exports = { getSale, getTodaySales, createSale, modifySale, deleteSale }
+module.exports = { getSale, getSalesByDate, getTodaySales, createSale, modifySale, deleteSale }

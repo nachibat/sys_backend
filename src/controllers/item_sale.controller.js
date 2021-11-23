@@ -21,7 +21,6 @@ const getItemsSale = async (req, res) => {
         return failToFind(res, e, 'item');
     }
 }
-
 const createItemSale = async (req, res) => {
     try {
         const { id_sale, product, price, quantity } = req.body;
