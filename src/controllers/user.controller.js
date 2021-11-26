@@ -1,6 +1,6 @@
 const bcrypt = require('bcrypt');
 
-const { httpError, permissonFailed } = require('../helpers/handleError')
+const { httpError, permissonFailed, loginError } = require('../helpers/handleError')
 const userModel = require('../models/user.model');
 
 const getUser = (req, res) => {
@@ -64,4 +64,18 @@ const deleteUser = async (req, res) => {
     }
 }
 
-module.exports = { getUser, getUsers, createUser, modifyUser, deleteUser }
+const changePassword = async (req, res) => {
+    try {
+        const { username, password } = req.body;
+        const user = await userModel.findOne({ username, state: true });
+        if (!user) { return loginError(res); }
+        if (!bcrypt.compareSync(password, user.password)) { return loginError(res); }
+        const newPassword = bcrypt.hashSync(req.body.newpassword, 10);
+        const changeDetails = await userModel.findOneAndUpdate({ username, state: true }, { password: newPassword }, { new: true });
+        return res.json({ ok: true, msg: 'Password changed', changeDetails });        
+    } catch (e) {
+        httpError(res, e);
+    }    
+}
+
+module.exports = { getUser, getUsers, createUser, modifyUser, deleteUser, changePassword }
