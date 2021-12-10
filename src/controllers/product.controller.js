@@ -17,6 +17,19 @@ const getProducts = async (req, res) => {
     const limit = Number(req.query.limit) || 5;
     const order = req.query.order || '';
     try {
+        const total = await productModel.countDocuments({ status: true });
+        const listProducts = await productModel.find({ status: true }).skip(from).limit(limit).sort(order);
+        return res.json({ ok: true, total, listProducts });
+    } catch (e) {
+        httpError(res, e);
+    }
+}
+
+const getAllProduct = async (req, res) => {
+    const from = Number(req.query.from) || 0;
+    const limit = Number(req.query.limit) || 5;
+    const order = req.query.order || '';
+    try {
         const total = await productModel.countDocuments({});
         const listProducts = await productModel.find({}).skip(from).limit(limit).sort(order);
         return res.json({ ok: true, total, listProducts });
@@ -31,8 +44,8 @@ const getStock = async (req, res) => {
     const order = req.query.order || 'quantity';
     const category = req.query.category || 'kiosko';
     try {
-        const total = await productModel.countDocuments({ category });
-        const listProducts = await productModel.find({ category }).skip(from).limit(limit).sort(order);
+        const total = await productModel.countDocuments({ category, status: true });
+        const listProducts = await productModel.find({ category, status: true }).skip(from).limit(limit).sort(order);
         return res.json({ ok: true, total, listProducts });
     } catch (e) {
         httpError(res, e);
@@ -48,13 +61,13 @@ const searchProducts = async (req, res) => {
     let data = {};
     switch (field) {
         case 'barcode':
-            data = { barcode: regex }
+            data = { barcode: regex, status: true }
             break;
         case 'description':
-            data = { description: regex }
+            data = { description: regex, status: true }
             break;
         case 'category':
-            data = { category: regex }
+            data = { category: regex, status: true }
             break;
         default:
             break;
@@ -105,15 +118,28 @@ const reduceStock = async (req, res) => {
 const deleteProduct = async (req, res) => {
     try {
         const { id } = req.params;
-        const productDeleted = await productModel.findByIdAndDelete(id);
+        const productDeleted = await productModel.findByIdAndUpdate(id, { status: false }, { new: true });
         if (!productDeleted) { return failToFind(res, { kind: 'ObjectId' }, 'product'); }
         return res.json({
             ok: true,
-            message: `Product ${productDeleted.description} deleted!`
+            message: `Product ${productDeleted.description} deleted!`,
+            productDeleted
         });
     } catch (e) {
         return failToFind(res, e, 'product');
     }
 }
 
-module.exports = { getProduct, getProducts, getStock, searchProducts, createProduct, modifyProduct, reduceStock, deleteProduct }
+const setStateProduct = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const status = true;
+        const productModified = await productModel.findByIdAndUpdate(id, { status }, { new: true, runValidators: true });
+        if (!productModified) { return failToFind(res, { kind: 'ObjectId' }, 'product'); }
+        return res.json({ ok: true, productModified});
+    } catch (e) {
+        return failToFind(res, e, 'product');
+    }        
+}
+
+module.exports = { getProduct, getProducts, getAllProduct, getStock, searchProducts, createProduct, modifyProduct, reduceStock, deleteProduct, setStateProduct }

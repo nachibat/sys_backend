@@ -19,6 +19,10 @@ const productSchema = new mongoose.Schema({
         type: Number,
         default: 0
     },
+    status: {
+        type: Boolean,
+        default: true
+    },
     cost_price: Number,
     percent_profit: Number,
     price: {
