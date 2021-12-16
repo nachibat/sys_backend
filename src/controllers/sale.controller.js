@@ -20,7 +20,7 @@ const getSalesByDate = async (req, res) => {
     const date = { createdAt: { $gte: firstDate, $lte: secondDate } };
     try {
         const total = await saleModel.countDocuments(date);
-        const listSales = await saleModel.find(date);
+        const listSales = await saleModel.find(date).populate('id_user', 'username role');
         return res.json({ ok: true, total, listSales });
     } catch (e) {
         httpError(res, e);
