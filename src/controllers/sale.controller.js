@@ -41,8 +41,8 @@ const getTodaySales = async (req, res) => {
 
 const createSale = async (req, res) => {
     try {
-        const { id_user, total } = req.body;
-        const saleCreated = await saleModel.create({ id_user, total });
+        const { id_user, payment, total } = req.body;
+        const saleCreated = await saleModel.create({ id_user, payment, total });
         return res.json({ ok: true, saleCreated });
     } catch (e) {
         httpError(res, e)
@@ -52,8 +52,8 @@ const createSale = async (req, res) => {
 const modifySale = async (req, res) => {
     try {
         const { id } = req.params;
-        const { id_user, total } = req.body;
-        const saleModified = await saleModel.findByIdAndUpdate(id, { id_user, total }, { new: true, runValidators: true });
+        const { id_user, payment, total } = req.body;
+        const saleModified = await saleModel.findByIdAndUpdate(id, { id_user, payment, total }, { new: true, runValidators: true });
         if (!saleModified) { return failToFind(res, { kind: 'ObjectId' }, 'sale') }
         return res.json({ ok: true, saleModified });
     } catch (e) {
