@@ -2,11 +2,12 @@ const express = require('express');
 const router = express.Router();
 
 const { verifyToken, verifySaleRole, verifyAdminRole } = require('../middlewares/authentication');
-const { getProduct, getProducts, getAllProduct, getStock, searchProducts, createProduct, modifyProduct, reduceStock, deleteProduct, setStateProduct } = require('../controllers/product.controller')
+const { getProduct, getProducts, getAllProduct, getStock, searchProducts, searchProductsPrice, createProduct, modifyProduct, reduceStock, deleteProduct, setStateProduct } = require('../controllers/product.controller')
 
 router.get('/find/:id', [verifyToken, verifySaleRole], getProduct);
 router.get('/list', [verifyToken, verifySaleRole], getProducts);
 router.get('/search', [verifyToken, verifySaleRole], searchProducts);
+router.get('/search-price', [verifyToken, verifySaleRole], searchProductsPrice);
 router.get('/stock', [verifyToken, verifySaleRole], getStock);
 router.post('/', [verifyToken, verifyAdminRole], createProduct);
 router.put('/:id', [verifyToken, verifyAdminRole], modifyProduct);

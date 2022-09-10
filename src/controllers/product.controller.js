@@ -82,6 +82,33 @@ const searchProducts = async (req, res) => {
     return res.json({ ok: true, msg: 'Ready' });
 }
 
+const searchProductsPrice = async (req, res) => {
+    const from = Number(req.query.from) || 0;
+    const limit = Number(req.query.limit) || 5;
+    const price = Number(req.query.price) || 0;
+    const category = req.query.category || 'kiosko';
+    try {
+        let pipeline = [];
+        const query = [{ price: { $lte: price }, category, status: true }];
+        const match = { '$match': { $and: query } };
+        const sort = { '$sort': { price: -1, description: 1 } };
+        const skip = { '$skip': from };
+        const lim = { '$limit': limit };
+        pipeline.push(match);
+        pipeline.push(sort);
+        pipeline.push(skip);
+        pipeline.push(lim);
+        const listProducts = await productModel.aggregate(pipeline);
+        const count = { $and: query };
+        pipeline.push(count);
+        const total = await productModel.countDocuments(count);
+        return res.json({ ok: true, total, listProducts })
+    } catch (e) {
+        httpError(res, e);
+    }
+    return res.json({ ok: true, msg: 'Busqueda por precio' }); // <- Test line
+}
+
 const createProduct = async (req, res) => {
     try {
         const { barcode, description, category, quantity, cost_price, percent_profit, price } = req.body;
@@ -142,4 +169,4 @@ const setStateProduct = async (req, res) => {
     }        
 }
 
-module.exports = { getProduct, getProducts, getAllProduct, getStock, searchProducts, createProduct, modifyProduct, reduceStock, deleteProduct, setStateProduct }
+module.exports = { getProduct, getProducts, getAllProduct, getStock, searchProducts, searchProductsPrice, createProduct, modifyProduct, reduceStock, deleteProduct, setStateProduct }
