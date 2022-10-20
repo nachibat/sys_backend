@@ -57,8 +57,8 @@ const searchFundRange = async (req, res) => {
             }
         };
         pipeline.push(project);
-        const unset = { $unset: ['user.password', 'user._id', 'user.state', 'user.createdAt', 'user.updatedAt'] };
-        pipeline.push(unset);
+        // const unset = { $unset: ['user.password', 'user._id', 'user.state', 'user.createdAt', 'user.updatedAt'] };
+        // pipeline.push(unset); // Actualizar servidor mongo en produccion
         const unwind = {
             $unwind: {
                 path: '$user',
