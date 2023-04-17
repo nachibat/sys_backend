@@ -1,5 +1,6 @@
 const { httpError, failToFind } = require('../helpers/handleError')
 const saleModel = require('../models/sale.model');
+const itemSaleModel = require('../models/item_sale.model');
 
 const getSale = async (req, res) => {
     try {
@@ -24,6 +25,28 @@ const getSalesByDate = async (req, res) => {
         return res.json({ ok: true, total, listSales });
     } catch (e) {
         httpError(res, e);
+    }
+}
+
+const getSalePhotocopies = async (req, res) => {
+    try {
+        const from = Date.parse(req.query.from) || new Date().setHours(0, 0, 0, 0);
+        const to = Date.parse(req.query.to) || new Date().setHours(23, 0, 0, 0);
+        const firstDate = new Date(new Date(from));
+        const secondDate = new Date(new Date(to).setHours(44, 59, 59));
+        let photocopyItems = [];
+        const date = { createdAt: { $gte: firstDate, $lte: secondDate } };
+        const sales = await saleModel.find(date);
+        for (const s of sales) {
+            const items = await itemSaleModel.find({ id_sale: s._id }).populate('product', 'barcode description category');
+            const photocopies = items.filter(i => i.product.barcode === '0000003');
+            photocopyItems.push(...photocopies);
+        }
+        let totalCash = 0;
+        photocopyItems.map(p => totalCash += p.price * p.quantity);
+        return res.json({ ok: true, totalItems: photocopyItems.length, totalCash, photocopyItems });
+    } catch (e) {
+        return failToFind(res, e, 'sale');
     }
 }
 
@@ -75,4 +98,4 @@ const deleteSale = async (req, res) => {
     }
 }
 
-module.exports = { getSale, getSalesByDate, getTodaySales, createSale, modifySale, deleteSale }
+module.exports = { getSale, getSalesByDate, getSalePhotocopies, getTodaySales, createSale, modifySale, deleteSale }
