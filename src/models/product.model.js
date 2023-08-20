@@ -24,6 +24,7 @@ const productSchema = new mongoose.Schema({
         default: true
     },
     cost_price: Number,
+    percent_increase: Number,
     iva: Number,
     percent_profit: Number,
     price: {

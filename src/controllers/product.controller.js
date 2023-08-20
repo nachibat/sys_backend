@@ -111,8 +111,8 @@ const searchProductsPrice = async (req, res) => {
 
 const createProduct = async (req, res) => {
     try {
-        const { barcode, description, category, quantity, cost_price, iva, percent_profit, price } = req.body;
-        const productCreated = await productModel.create({ barcode, description, category, quantity, cost_price, iva, percent_profit, price });
+        const { barcode, description, category, quantity, cost_price, percent_increase, iva, percent_profit, price } = req.body;
+        const productCreated = await productModel.create({ barcode, description, category, quantity, cost_price, percent_increase, iva, percent_profit, price });
         return res.json({ ok: true, productCreated });
     } catch (e) {
         httpError(res, e);
@@ -122,8 +122,8 @@ const createProduct = async (req, res) => {
 const modifyProduct = async (req, res) => {
     try {
         const { id } = req.params;
-        const { barcode, description, category, quantity, cost_price, iva, percent_profit, price } = req.body;
-        const productModified = await productModel.findByIdAndUpdate(id, { barcode, description, category, quantity, cost_price, iva, percent_profit, price }, { new: true, runValidators: true });
+        const { barcode, description, category, quantity, cost_price, iva, percent_increase, percent_profit, price } = req.body;
+        const productModified = await productModel.findByIdAndUpdate(id, { barcode, description, category, quantity, cost_price, iva, percent_increase, percent_profit, price }, { new: true, runValidators: true });
         if (!productModified) { return failToFind(res, { kind: 'ObjectId' }, 'product'); }
         return res.json({ ok: true, productModified});
     } catch (e) {
