@@ -9,8 +9,8 @@ const cors = require('cors');
 const { dbConnect } = require('./config/mongo');
 
 const ssl_options = {
-    key: fs.readFileSync('./server.key'),
-    cert: fs.readFileSync('./server.crt')
+    key: fs.readFileSync(process.env.KEY),
+    cert: fs.readFileSync(process.env.CERT)
 }
 
 const app = express();

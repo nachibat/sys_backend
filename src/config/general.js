@@ -12,3 +12,7 @@ process.env.DB_NAME = process.env.DB_NAME || 'syskiosko'
 // JSONWebToken
 process.env.TOKEN_EXPIRATION = process.env.TOKEN_EXPIRATION || '7 days';
 process.env.SEED = process.env.SEED || 'development-seed';
+
+// Certificados
+process.env.KEY = process.env.KEY || './privkey.pem';
+process.env.CERT = process.env.CERT || './fullchain.pem';
