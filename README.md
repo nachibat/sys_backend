@@ -1,4 +1,4 @@
-# S&S Kiosko - Backend
+# S&S Kiosco - Backend
 
 Basic backend for stock control system.
 
